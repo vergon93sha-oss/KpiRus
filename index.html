@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ИТОГИ ПО ЗАКРЫТИЮ ЗАДАЧ И РАСЧЕТА KPI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Встроенные стили для надежности, чтобы не зависеть от внешних CDN -->
     <style>
         body { background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%); min-height: 100vh; color: white; font-family: sans-serif; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -12,7 +12,10 @@
         .cloud-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; }
         .cloud { position: absolute; font-size: 5rem; opacity: 0.15; animation: drift linear infinite; }
         @keyframes drift { from { transform: translateX(-20vw); } to { transform: translateX(100vw); } }
+        /* Простейшие классы для поддержки верстки без Tailwind, если он не загрузится */
+        .flex { display: flex; } .grid { display: grid; } .max-w-7xl { max-width: 80rem; margin: auto; } .rounded-3xl { border-radius: 1.5rem; } .p-8 { padding: 2rem; }
     </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="p-6">
     <div class="cloud-container">
@@ -138,3 +141,5 @@
     </script>
 </body>
 </html>
+
+
