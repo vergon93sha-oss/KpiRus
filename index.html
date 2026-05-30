@@ -107,12 +107,13 @@
             let tot = 0;
             d.filter(i => i.date.startsWith(f)).forEach(i => {
                 tot += Number(i.sm);
+                let linkUrl = i.url ? (i.url.startsWith('http') ? i.url : 'https://'+i.url) : '#';
                 b.innerHTML += `<tr class="border-b border-white/5 hover:bg-white/5">
                     <td class="p-2 whitespace-nowrap">${i.date}</td>
                     <td class="p-2"><div class="font-bold text-white max-w-[200px]">${i.desc}</div><div class="text-[9px] text-blue-400 mt-1">${i.k} | ${i.n}</div></td>
                     <td class="p-2 max-w-[150px]">${i.comment}</td>
                     <td class="p-2"><select onchange="up(this, ${i.id}, 'status')" class="input-g p-0.5 text-[9px]"><option ${i.status=='Выполнено'?'selected':''}>Выполнено</option><option ${i.status=='В работе'?'selected':''}>В работе</option><option ${i.status=='Ожидаю информации'?'selected':''}>Ожидаю информации</option></select></td>
-                    <td class="p-2 flex items-center gap-1"><input type="text" class="input-g p-0.5 w-12" value="${i.url||''}" onchange="up(this, ${i.id}, 'url')">${i.url?`<a href="${i.url.startsWith('http')?i.url:'https://'+i.url}" target="_blank" class="text-blue-400 text-lg">↗</a>`:''}</td>
+                    <td class="p-2 flex items-center gap-1"><input type="text" class="input-g p-0.5 w-12" value="${i.url||''}" onchange="up(this, ${i.id}, 'url')"><a href="${linkUrl}" target="_blank" class="text-blue-400 text-lg hover:text-white">↗</a></td>
                     <td class="p-2"><select onchange="up(this, ${i.id}, 'res')" class="input-g p-0.5 text-[9px]"><option ${i.res=='Хорошо'?'selected':''}>Хорошо</option><option ${i.res=='Замечания'?'selected':''}>Замечания</option></select></td>
                     <td class="p-2"><input type="number" class="input-g p-0.5 w-12" value="${i.cf}" onchange="up(this, ${i.id}, 'cf')"></td>
                     <td class="p-2"><input type="number" class="input-g p-0.5 w-16" value="${i.sm}" onchange="up(this, ${i.id}, 'sm')"></td>
