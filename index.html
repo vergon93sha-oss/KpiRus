@@ -8,12 +8,13 @@
     <style>
         body { background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%); min-height: 100vh; color: white; font-family: sans-serif; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .input-g { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; padding: 8px; width: 100%; font-size: 13px; }
+        .input-g { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: white; padding: 6px; width: 100%; font-size: 12px; }
         .tab-btn { padding: 10px 20px; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.3s; }
         .tab-btn.active { border-bottom: 2px solid #3b82f6; color: #60a5fa; font-weight: bold; }
         .cloud-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; }
         .cloud { position: absolute; font-size: 3rem; opacity: 0.2; animation: drift linear infinite; }
         @keyframes drift { from { transform: translateX(-10vw); } to { transform: translateX(110vw); } }
+        tr:hover { background: rgba(255,255,255,0.05); }
     </style>
 </head>
 <body class="p-4">
@@ -43,7 +44,7 @@
         <div id="content2" class="hidden">
             <input type="month" id="monthFilter" class="input-g mb-3 max-w-[200px]" onchange="renderTable()">
             <div class="overflow-x-auto">
-                <table class="w-full text-[10px] text-left border-collapse">
+                <table class="w-full text-[11px] text-left border-collapse">
                     <thead class="text-blue-300 uppercase">
                         <tr><th class="p-2">Дата</th><th class="p-2">Поручение и KPI</th><th class="p-2">Коммент</th><th class="p-2">Статус</th><th class="p-2">Ссылка</th><th class="p-2">ОЦЕНКА ДИРЕКТОРА</th><th class="p-2">КОЭФФИЦИЕНТ</th><th class="p-2">Сумма</th></tr>
                     </thead>
@@ -107,15 +108,15 @@
             let tot = 0;
             d.filter(i => i.date.startsWith(f)).forEach(i => {
                 tot += Number(i.sm);
-                let linkUrl = i.url ? (i.url.startsWith('http') ? i.url : 'https://'+i.url) : '#';
-                b.innerHTML += `<tr class="border-b border-white/5 hover:bg-white/5">
+                let linkHtml = i.url ? `<a href="${i.url.startsWith('http')?i.url:'https://'+i.url}" target="_blank" class="text-blue-400 hover:text-white text-lg">↗</a>` : '';
+                b.innerHTML += `<tr>
                     <td class="p-2 whitespace-nowrap">${i.date}</td>
-                    <td class="p-2"><div class="font-bold text-white max-w-[200px]">${i.desc}</div><div class="text-[9px] text-blue-400 mt-1">${i.k} | ${i.n}</div></td>
-                    <td class="p-2 max-w-[150px]">${i.comment}</td>
+                    <td class="p-2"><div class="font-bold text-white max-w-[180px]">${i.desc}</div><div class="text-[9px] text-blue-400 mt-1">${i.k} | ${i.n}</div></td>
+                    <td class="p-2 max-w-[120px]">${i.comment}</td>
                     <td class="p-2"><select onchange="up(this, ${i.id}, 'status')" class="input-g p-0.5 text-[9px]"><option ${i.status=='Выполнено'?'selected':''}>Выполнено</option><option ${i.status=='В работе'?'selected':''}>В работе</option><option ${i.status=='Ожидаю информации'?'selected':''}>Ожидаю информации</option></select></td>
-                    <td class="p-2 flex items-center gap-1"><input type="text" class="input-g p-0.5 w-12" value="${i.url||''}" onchange="up(this, ${i.id}, 'url')"><a href="${linkUrl}" target="_blank" class="text-blue-400 text-lg hover:text-white">↗</a></td>
+                    <td class="p-2 flex items-center gap-2"><input type="text" class="input-g p-0.5 w-12" value="${i.url||''}" onchange="up(this, ${i.id}, 'url')">${linkHtml}</td>
                     <td class="p-2"><select onchange="up(this, ${i.id}, 'res')" class="input-g p-0.5 text-[9px]"><option ${i.res=='Хорошо'?'selected':''}>Хорошо</option><option ${i.res=='Замечания'?'selected':''}>Замечания</option></select></td>
-                    <td class="p-2"><input type="number" class="input-g p-0.5 w-12" value="${i.cf}" onchange="up(this, ${i.id}, 'cf')"></td>
+                    <td class="p-2"><input type="number" class="input-g p-0.5 w-10" value="${i.cf}" onchange="up(this, ${i.id}, 'cf')"></td>
                     <td class="p-2"><input type="number" class="input-g p-0.5 w-16" value="${i.sm}" onchange="up(this, ${i.id}, 'sm')"></td>
                 </tr>`;
             });
