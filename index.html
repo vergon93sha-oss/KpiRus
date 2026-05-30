@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -36,8 +37,8 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
                 <thead><tr class="text-blue-300 uppercase text-[10px] border-b border-white/10">
-                    <th class="p-3">Дата</th><th class="p-3">Задача</th><th class="p-3">Итог (статус)</th>
-                    <th class="p-3">|</th><th class="p-3">Оценка руководителя</th><th class="p-3">Коэфф (К)</th><th class="p-3">Сумма</th>
+                    <th class="p-3">Дата</th><th class="p-3">Задача</th><th class="p-3">Итог</th>
+                    <th class="p-3">|</th><th class="p-3">Оценка</th><th class="p-3">К</th><th class="p-3">Сумма</th><th class="p-3"></th>
                 </tr></thead>
                 <tbody id="taskBody"></tbody>
             </table>
@@ -90,6 +91,14 @@
             renderTable();
         }
 
+        // Новая функция удаления
+        function deleteTask(id) {
+            let d = JSON.parse(localStorage.getItem('myTasks') || '[]');
+            d = d.filter(item => item.id !== id);
+            localStorage.setItem('myTasks', JSON.stringify(d));
+            renderTable();
+        }
+
         function renderTable() {
             let f = document.getElementById('monthFilter').value;
             let d = JSON.parse(localStorage.getItem('myTasks') || '[]');
@@ -110,6 +119,7 @@
                     <td class="p-3"><select onchange="up(this, ${i.id}, 'res')" class="input-g text-xs p-1"><option ${i.res=='Хорошо'?'selected':''}>Хорошо</option><option ${i.res=='Замечания'?'selected':''}>Замечания</option></select></td>
                     <td class="p-3"><input type="number" class="input-g w-16" value="${i.cf}" onchange="up(this, ${i.id}, 'cf')"></td>
                     <td class="p-3"><input type="number" class="input-g w-20" value="${i.sm}" onchange="up(this, ${i.id}, 'sm')"></td>
+                    <td class="p-3"><button onclick="deleteTask(${i.id})" class="text-red-500 hover:text-red-300 font-bold">X</button></td>
                 </tr>`;
             });
             document.getElementById('totalSum').innerText = tot + ' руб.';
@@ -127,3 +137,5 @@
     </script>
 </body>
 </html>
+
+
