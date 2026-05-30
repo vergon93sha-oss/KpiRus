@@ -8,7 +8,7 @@
     <style>
         body { background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%); min-height: 100vh; color: white; font-family: sans-serif; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .input-g { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; padding: 10px; }
+        .input-g { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; padding: 10px; width: 100%; }
         .cloud-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; }
         .cloud { position: absolute; font-size: 5rem; opacity: 0.15; animation: drift linear infinite; }
         @keyframes drift { from { transform: translateX(-20vw); } to { transform: translateX(100vw); } }
@@ -22,22 +22,22 @@
     </div>
 
     <div class="max-w-7xl mx-auto glass rounded-3xl p-8 shadow-2xl relative z-10">
-        <h1 class="text-2xl font-light text-center mb-8 uppercase tracking-widest text-blue-200">ИТОГИ ПО ЗАКРЫТИЮ ЗАДАЧ И РАСЧЕТА KPI Бизнес ассистента руководителя</h1>
+        <h1 class="text-2xl font-light text-center mb-8 uppercase tracking-widest text-blue-200">ИТОГИ ПО ЗАКРЫТИЮ ЗАДАЧ И РАСЧЕТА KPI</h1>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <input type="date" id="dateInput" class="input-g">
             <input type="month" id="monthFilter" class="input-g" onchange="renderTable()">
-            <select id="taskSelect" class="input-g" onchange="updateKPI()"></select>
+            <select id="taskSelect" class="input-g"></select>
             <input type="text" id="descInput" placeholder="Описание поручения..." class="input-g md:col-span-2">
-            <input type="text" id="kpiDisplay" readonly class="input-g bg-blue-900/40 font-bold" placeholder="KPI">
+            <input type="text" id="commInput" placeholder="Комментарий..." class="input-g">
+            <input type="text" id="linkInput" placeholder="Ссылка (URL)..." class="input-g">
             <button onclick="addTask()" class="bg-blue-600 hover:bg-blue-500 p-3 rounded-lg font-bold transition">ДОБАВИТЬ ЗАДАЧУ</button>
         </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
                 <thead><tr class="text-blue-300 uppercase text-[10px] border-b border-white/10">
-                    <th class="p-3">Дата</th><th class="p-3">Поручение</th><th class="p-3">Итог</th>
-                    <th class="p-3">|</th><th class="p-3">Оценка директора</th><th class="p-3">Коэффициент</th><th class="p-3">Сумма</th><th class="p-3"></th>
+                    <th class="p-3">Дата</th><th class="p-3">Задача / Коммент</th><th class="p-3">Ссылка</th><th class="p-3">Статус</th><th class="p-3">Оценка</th><th class="p-3">Сумма</th><th class="p-3"></th>
                 </tr></thead>
                 <tbody id="taskBody"></tbody>
             </table>
@@ -61,39 +61,37 @@
 
     <script>
         const TASKS = [
-            {n: "Ведение, систематизация и технический перенос баз данных, реестров договоров и электронного архива документов.", k: "К2"},
-            {n: "Организация деловых встреч, ведение протоколов переговоров и контроль исполнения поручений.", k: "К3"},
-            {n: "Взаимодействие со смежными подразделениями (логистика, бухгалтерия, склад) по внутренним вопросам.", k: "К4"},
-            {n: "Подготовка аналитических данных, регулярной отчетности и презентаций.", k: "К3"},
-            {n: "Подготовка документооборота отчетов планов работ графиков для производства.", k: "К2"},
-            {n: "Ведение деловой переписки и коммуникация с клиентами через email, мессенджеры и CRM-систему.", k: "К2"},
-            {n: "Обработка входящих запросов, контроль исполнения заказов и соблюдения сроков обязательств перед клиентами.", k: "К1"},
-            {n: "Работа с рекламациями, претензиями, урегулирование спорных ситуаций и обновление базы контактов.", k: "К2"},
-            {n: "Подготовка коммерческих предложений и дополнительных сервисов для постоянных клиентов.", k: "К6"},
-            {n: "Координация работы внешних подрядчиков и контроль выполнения ими поставленных задач.", k: "К1"},
-            {n: "Работа с ИИ: помощь в разработке новых продуктов, презентаций, отчетов, документов, рецептур.", k: "К5"},
-            {n: "Формирование и регистрация карточек товаров с присвоением кодов GTIN в GS1 и системе «Честный ЗНАК».", k: "К2"},
-            {n: "Разработка дизайна, актуализация прейскурантов и макетов этикеток в специализированном ПО (BarTender).", k: "К5"},
-            {n: "Разработка, запись, монтаж и оформление обучающих видеоматериалов, видеоинструкции и скринкастов.", k: "К5"}
+            {n: "Ведение, систематизация и технический перенос баз данных, реестров документов", k: "К2"},
+            {n: "Организация деловых встреч, ведение протоколов", k: "К3"},
+            {n: "Взаимодействие со смежными подразделениями", k: "К4"},
+            {n: "Подготовка аналитических данных, регулярной отчетности", k: "К3"},
+            {n: "Подготовка документооборота, графиков для производства", k: "К2"},
+            {n: "Ведение переписки и коммуникация с клиентами", k: "К2"},
+            {n: "Обработка входящих запросов, контроль исполнения заказов", k: "К1"},
+            {n: "Работа с рекламациями, урегулирование претензий", k: "К2"},
+            {n: "Подготовка коммерческих предложений", k: "К6"},
+            {n: "Координация внешних подрядчиков", k: "К1"},
+            {n: "Работа с ИИ: разработка продуктов, презентаций, документов", k: "К5"},
+            {n: "Регистрация товаров GTIN и «Честный ЗНАК»", k: "К2"},
+            {n: "Дизайн, актуализация прейскурантов и макетов (BarTender)", k: "К5"},
+            {n: "Разработка, запись, монтаж обучающих видеоматериалов", k: "К5"}
         ];
 
         const sel = document.getElementById('taskSelect');
-        TASKS.forEach(t => sel.innerHTML += `<option value="${t.n}|${t.k}">${t.n}</option>`);
-
-        function updateKPI() { document.getElementById('kpiDisplay').value = sel.value.split('|')[1] || ""; }
+        TASKS.forEach(t => sel.innerHTML += `<option value="${t.n}|${t.k}">${t.n} — ${t.k}</option>`);
 
         function addTask() {
             let [n, k] = sel.value.split('|');
             let d = JSON.parse(localStorage.getItem('myTasks') || '[]');
-            d.push({ id: Date.now(), date: document.getElementById('dateInput').value || new Date().toISOString().split('T')[0], n, k, desc: document.getElementById('descInput').value, s: 'В работе', res: 'Хорошо', cf: 1, sm: 0 });
-            localStorage.setItem('myTasks', JSON.stringify(d));
-            renderTable();
-        }
-
-        // Новая функция удаления
-        function deleteTask(id) {
-            let d = JSON.parse(localStorage.getItem('myTasks') || '[]');
-            d = d.filter(item => item.id !== id);
+            d.push({ 
+                id: Date.now(), 
+                date: document.getElementById('dateInput').value || new Date().toISOString().split('T')[0], 
+                task: n, k, 
+                desc: document.getElementById('descInput').value, 
+                comm: document.getElementById('commInput').value,
+                url: document.getElementById('linkInput').value,
+                s: 'В работе', res: 'Хорошо', sm: 0 
+            });
             localStorage.setItem('myTasks', JSON.stringify(d));
             renderTable();
         }
@@ -102,23 +100,20 @@
             let f = document.getElementById('monthFilter').value;
             let d = JSON.parse(localStorage.getItem('myTasks') || '[]');
             let adv = Number(document.getElementById('advanceInput').value);
-            
-            d.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
             let b = document.getElementById('taskBody');
             b.innerHTML = '';
             let tot = 0;
             d.filter(i => i.date.startsWith(f)).forEach(i => {
                 tot += Number(i.sm);
+                let urlDisplay = i.url ? `<a href="${i.url.startsWith('http')?i.url:'https://'+i.url}" target="_blank" class="text-blue-400 font-bold hover:text-white">↗ Ссылка</a>` : '-';
                 b.innerHTML += `<tr class="border-b border-white/5">
                     <td class="p-3">${i.date}</td>
-                    <td class="p-3 max-w-sm">${i.desc}<div class="text-blue-400 text-[9px]">${i.n}</div></td>
-                    <td class="p-3"><select onchange="up(this, ${i.id}, 's')" class="input-g text-xs p-1"><option ${i.s=='В работе'?'selected':''}>В работе</option><option ${i.s=='Выполнено'?'selected':''}>Выполнено</option><option ${i.s=='Ожидаю'?'selected':''}>Ожидаю</option></select></td>
-                    <td class="p-3 font-bold text-gray-500">|</td>
+                    <td class="p-3 max-w-sm"><div class="font-bold">${i.desc}</div><div class="text-blue-400 text-[10px]">${i.task} (${i.k})</div><div class="text-gray-400 text-[10px] italic">Комм: ${i.comm}</div></td>
+                    <td class="p-3">${urlDisplay}</td>
+                    <td class="p-3"><select onchange="up(this, ${i.id}, 's')" class="input-g text-xs p-1"><option ${i.s=='В работе'?'selected':''}>В работе</option><option ${i.s=='Выполнено'?'selected':''}>Выполнено</option></select></td>
                     <td class="p-3"><select onchange="up(this, ${i.id}, 'res')" class="input-g text-xs p-1"><option ${i.res=='Хорошо'?'selected':''}>Хорошо</option><option ${i.res=='Замечания'?'selected':''}>Замечания</option></select></td>
-                    <td class="p-3"><input type="number" class="input-g w-16" value="${i.cf}" onchange="up(this, ${i.id}, 'cf')"></td>
                     <td class="p-3"><input type="number" class="input-g w-20" value="${i.sm}" onchange="up(this, ${i.id}, 'sm')"></td>
-                    <td class="p-3"><button onclick="deleteTask(${i.id})" class="text-red-500 hover:text-red-300 font-bold">X</button></td>
+                    <td class="p-3"><button onclick="deleteTask(${i.id})" class="text-red-500">✕</button></td>
                 </tr>`;
             });
             document.getElementById('totalSum').innerText = tot + ' руб.';
@@ -131,6 +126,13 @@
             localStorage.setItem('myTasks', JSON.stringify(d));
             renderTable();
         }
+
+        function deleteTask(id) {
+            let d = JSON.parse(localStorage.getItem('myTasks') || '[]');
+            localStorage.setItem('myTasks', JSON.stringify(d.filter(item => item.id !== id)));
+            renderTable();
+        }
+
         document.getElementById('monthFilter').value = new Date().toISOString().slice(0, 7);
         renderTable();
     </script>
