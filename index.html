@@ -3,58 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KPI Tracker: Ввод и Отчет</title>
+    <title>ИТОГИ ПО ЗАКРЫТИЮ ЗАДАЧ И РАСЧЕТА KPI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%); min-height: 100vh; color: white; font-family: sans-serif; overflow-x: hidden; }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .input-g { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: white; padding: 6px; width: 100%; font-size: 12px; }
-        .tab-btn { padding: 10px 20px; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.3s; }
-        .tab-btn.active { border-bottom: 2px solid #3b82f6; color: #60a5fa; font-weight: bold; }
+        .input-g { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: white; padding: 10px; }
         .cloud-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; }
-        .cloud { position: absolute; font-size: 3rem; opacity: 0.2; animation: drift linear infinite; }
-        @keyframes drift { from { transform: translateX(-10vw); } to { transform: translateX(110vw); } }
-        tr:hover { background: rgba(255,255,255,0.05); }
+        .cloud { position: absolute; font-size: 5rem; opacity: 0.15; animation: drift linear infinite; }
+        @keyframes drift { from { transform: translateX(-20vw); } to { transform: translateX(100vw); } }
     </style>
 </head>
-<body class="p-4">
+<body class="p-6">
     <div class="cloud-container">
-        <div class="cloud" style="top: 10%; animation-duration: 50s;">☁️</div>
-        <div class="cloud" style="top: 40%; animation-duration: 80s;">☁️</div>
-        <div class="cloud" style="top: 70%; animation-duration: 65s;">☁️</div>
+        <div class="cloud" style="top: 5%; animation-duration: 40s;">☁️</div>
+        <div class="cloud" style="top: 30%; animation-duration: 70s;">☁️</div>
+        <div class="cloud" style="top: 60%; animation-duration: 60s;">☁️</div>
     </div>
 
-    <div class="max-w-7xl mx-auto glass rounded-2xl p-6 shadow-2xl relative z-10">
-        <h1 class="text-lg font-light text-center mb-6 uppercase tracking-widest text-blue-200">ИТОГ РАСЧЕТА ПО ЗАДАЧАМ И KPI Бизнес ассистента руководителя</h1>
+    <div class="max-w-7xl mx-auto glass rounded-3xl p-8 shadow-2xl relative z-10">
+        <h1 class="text-2xl font-light text-center mb-8 uppercase tracking-widest text-blue-200">ИТОГИ ПО ЗАКРЫТИЮ ЗАДАЧ И РАСЧЕТА KPI Бизнес ассистента руководителя</h1>
         
-        <div class="flex justify-center gap-6 mb-6">
-            <div id="tab1" class="tab-btn active" onclick="showTab(1)">ВВОД</div>
-            <div id="tab2" class="tab-btn" onclick="showTab(2)">ОТЧЕТ</div>
-        </div>
-
-        <div id="content1" class="space-y-3 max-w-xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <input type="date" id="dateInput" class="input-g">
+            <input type="month" id="monthFilter" class="input-g" onchange="renderTable()">
             <select id="taskSelect" class="input-g" onchange="updateKPI()"></select>
-            <input type="text" id="descInput" placeholder="Конкретное поручение..." class="input-g">
-            <input type="text" id="commentInput" placeholder="Ваш комментарий..." class="input-g">
-            <input type="text" id="kpiDisplay" readonly class="input-g bg-blue-900/30" placeholder="KPI (авто)">
-            <button onclick="addTask()" class="w-full bg-blue-600 hover:bg-blue-500 p-3 rounded-lg font-bold transition">ДОБАВИТЬ ЗАДАЧУ</button>
+            <input type="text" id="descInput" placeholder="Описание поручения..." class="input-g md:col-span-2">
+            <input type="text" id="kpiDisplay" readonly class="input-g bg-blue-900/40 font-bold" placeholder="KPI">
+            <button onclick="addTask()" class="bg-blue-600 hover:bg-blue-500 p-3 rounded-lg font-bold transition">ДОБАВИТЬ ЗАДАЧУ</button>
         </div>
 
-        <div id="content2" class="hidden">
-            <input type="month" id="monthFilter" class="input-g mb-3 max-w-[200px]" onchange="renderTable()">
-            <div class="overflow-x-auto">
-                <table class="w-full text-[11px] text-left border-collapse">
-                    <thead class="text-blue-300 uppercase">
-                        <tr><th class="p-2">Дата</th><th class="p-2">Поручение и KPI</th><th class="p-2">Коммент</th><th class="p-2">Статус</th><th class="p-2">Ссылка</th><th class="p-2">ОЦЕНКА ДИРЕКТОРА</th><th class="p-2">КОЭФФИЦИЕНТ</th><th class="p-2">Сумма</th></tr>
-                    </thead>
-                    <tbody id="taskBody"></tbody>
-                </table>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead><tr class="text-blue-300 uppercase text-[10px] border-b border-white/10">
+                    <th class="p-3">Дата</th><th class="p-3">Задача</th><th class="p-3">Итог</th>
+                    <th class="p-3">|</th><th class="p-3">Оценка</th><th class="p-3">К</th><th class="p-3">Сумма</th><th class="p-3"></th>
+                </tr></thead>
+                <tbody id="taskBody"></tbody>
+            </table>
+        </div>
+
+        <div class="mt-8 p-6 glass rounded-2xl flex flex-col md:flex-row justify-end items-center gap-6">
+            <div class="text-right text-lg">
+                <div class="text-blue-300">Итого:</div>
+                <div id="totalSum" class="text-3xl font-bold">0 руб.</div>
             </div>
-            <div class="mt-6 flex flex-wrap justify-end gap-6 items-center glass p-4 rounded-xl text-sm">
-                <div>Аванс: <input type="number" id="advanceInput" value="0" class="input-g w-24" onchange="renderTable()"></div>
-                <div class="font-bold">Итого: <span id="totalSum">0</span> руб.</div>
-                <div class="text-green-400 font-black">К ВЫПЛАТЕ: <span id="finalPay">0</span> руб.</div>
+            <div class="flex flex-col gap-2">
+                <label class="text-xs text-blue-300 uppercase">Выплачено авансом:</label>
+                <input type="number" id="advanceInput" value="0" class="input-g w-40" onchange="renderTable()">
+            </div>
+            <div class="text-right">
+                <div class="text-blue-300 uppercase text-xs">К оплате:</div>
+                <div id="finalPay" class="text-4xl font-black text-green-400">0 руб.</div>
             </div>
         </div>
     </div>
@@ -76,63 +76,63 @@
             {n: "Разработка дизайна, актуализация прейскурантов и макетов этикеток в специализированном ПО (BarTender).", k: "К5"},
             {n: "Разработка, запись, монтаж и оформление обучающих видеоматериалов, видеоинструкции и скринкастов.", k: "К5"}
         ];
-        
+
         const sel = document.getElementById('taskSelect');
         TASKS.forEach(t => sel.innerHTML += `<option value="${t.n}|${t.k}">${t.n}</option>`);
 
-        function updateKPI() { document.getElementById('kpiDisplay').value = sel.value.split('|')[1]; }
-        updateKPI();
-
-        function showTab(n) {
-            document.getElementById('content1').classList.toggle('hidden', n !== 1);
-            document.getElementById('content2').classList.toggle('hidden', n !== 2);
-            document.getElementById('tab1').classList.toggle('active', n === 1);
-            document.getElementById('tab2').classList.toggle('active', n === 2);
-            if(n === 2) renderTable();
-        }
+        function updateKPI() { document.getElementById('kpiDisplay').value = sel.value.split('|')[1] || ""; }
 
         function addTask() {
             let [n, k] = sel.value.split('|');
             let d = JSON.parse(localStorage.getItem('myTasks') || '[]');
-            d.push({ id: Date.now(), date: document.getElementById('dateInput').value || new Date().toISOString().split('T')[0], n, k, desc: document.getElementById('descInput').value, comment: document.getElementById('commentInput').value, status: 'Выполнено', res: 'Хорошо', cf: 1, sm: 0, url: '' });
+            d.push({ id: Date.now(), date: document.getElementById('dateInput').value || new Date().toISOString().split('T')[0], n, k, desc: document.getElementById('descInput').value, s: 'В работе', res: 'Хорошо', cf: 1, sm: 0 });
             localStorage.setItem('myTasks', JSON.stringify(d));
-            alert('Задача добавлена!');
+            renderTable();
+        }
+
+        // Новая функция удаления
+        function deleteTask(id) {
+            let d = JSON.parse(localStorage.getItem('myTasks') || '[]');
+            d = d.filter(item => item.id !== id);
+            localStorage.setItem('myTasks', JSON.stringify(d));
+            renderTable();
         }
 
         function renderTable() {
             let f = document.getElementById('monthFilter').value;
             let d = JSON.parse(localStorage.getItem('myTasks') || '[]');
             let adv = Number(document.getElementById('advanceInput').value);
+            
+            d.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
             let b = document.getElementById('taskBody');
             b.innerHTML = '';
             let tot = 0;
             d.filter(i => i.date.startsWith(f)).forEach(i => {
                 tot += Number(i.sm);
-                let linkHtml = i.url ? `<a href="${i.url.startsWith('http')?i.url:'https://'+i.url}" target="_blank" class="text-blue-400 hover:text-white text-lg">↗</a>` : '';
-                b.innerHTML += `<tr>
-                    <td class="p-2 whitespace-nowrap">${i.date}</td>
-                    <td class="p-2"><div class="font-bold text-white max-w-[180px]">${i.desc}</div><div class="text-[9px] text-blue-400 mt-1">${i.k} | ${i.n}</div></td>
-                    <td class="p-2 max-w-[120px]">${i.comment}</td>
-                    <td class="p-2"><select onchange="up(this, ${i.id}, 'status')" class="input-g p-0.5 text-[9px]"><option ${i.status=='Выполнено'?'selected':''}>Выполнено</option><option ${i.status=='В работе'?'selected':''}>В работе</option><option ${i.status=='Ожидаю информации'?'selected':''}>Ожидаю информации</option></select></td>
-                    <td class="p-2 flex items-center gap-2"><input type="text" class="input-g p-0.5 w-12" value="${i.url||''}" onchange="up(this, ${i.id}, 'url')">${linkHtml}</td>
-                    <td class="p-2"><select onchange="up(this, ${i.id}, 'res')" class="input-g p-0.5 text-[9px]"><option ${i.res=='Хорошо'?'selected':''}>Хорошо</option><option ${i.res=='Замечания'?'selected':''}>Замечания</option></select></td>
-                    <td class="p-2"><input type="number" class="input-g p-0.5 w-10" value="${i.cf}" onchange="up(this, ${i.id}, 'cf')"></td>
-                    <td class="p-2"><input type="number" class="input-g p-0.5 w-16" value="${i.sm}" onchange="up(this, ${i.id}, 'sm')"></td>
+                b.innerHTML += `<tr class="border-b border-white/5">
+                    <td class="p-3">${i.date}</td>
+                    <td class="p-3 max-w-sm">${i.desc}<div class="text-blue-400 text-[9px]">${i.n}</div></td>
+                    <td class="p-3"><select onchange="up(this, ${i.id}, 's')" class="input-g text-xs p-1"><option ${i.s=='В работе'?'selected':''}>В работе</option><option ${i.s=='Выполнено'?'selected':''}>Выполнено</option><option ${i.s=='Ожидаю'?'selected':''}>Ожидаю</option></select></td>
+                    <td class="p-3 font-bold text-gray-500">|</td>
+                    <td class="p-3"><select onchange="up(this, ${i.id}, 'res')" class="input-g text-xs p-1"><option ${i.res=='Хорошо'?'selected':''}>Хорошо</option><option ${i.res=='Замечания'?'selected':''}>Замечания</option></select></td>
+                    <td class="p-3"><input type="number" class="input-g w-16" value="${i.cf}" onchange="up(this, ${i.id}, 'cf')"></td>
+                    <td class="p-3"><input type="number" class="input-g w-20" value="${i.sm}" onchange="up(this, ${i.id}, 'sm')"></td>
+                    <td class="p-3"><button onclick="deleteTask(${i.id})" class="text-red-500 hover:text-red-300 font-bold">X</button></td>
                 </tr>`;
             });
-            document.getElementById('totalSum').innerText = tot;
-            document.getElementById('finalPay').innerText = (tot - adv);
+            document.getElementById('totalSum').innerText = tot + ' руб.';
+            document.getElementById('finalPay').innerText = (tot - adv) + ' руб.';
         }
 
         function up(el, id, f) {
             let d = JSON.parse(localStorage.getItem('myTasks'));
-            let item = d.find(i => i.id == id);
-            item[f] = (f === 'sm' || f === 'cf') ? Number(el.value) : el.value;
+            d.find(i => i.id == id)[f] = el.value;
             localStorage.setItem('myTasks', JSON.stringify(d));
-            if(f==='sm') renderTable();
+            renderTable();
         }
-
         document.getElementById('monthFilter').value = new Date().toISOString().slice(0, 7);
+        renderTable();
     </script>
 </body>
 </html>
